@@ -22,23 +22,23 @@ static char	*ft_fill_number(char *tab, int count, int n, int is_negative){
 	return (tab);
 }
 
-char	*ft_itoa(int n){
-    int		is_negative;
-    int		count;
-    char	*tab;
+char *ft_itoa(int n){
+	int		is_negative;
+	int		count;
+	char	*tab;
 
-    is_negative = 0;
-    if (n == -2147483648)
-        return (ft_strdup("-2147483648"));
-    if (n < 0){
-        is_negative = 1;
-        n = -n;
-    }
-    count = ft_count_digits(n) + is_negative;
-    tab = (char *)malloc(sizeof(char) * (count + 1));
-    if (!tab)
-        return (NULL);
-    tab[count] = 0;
-    count--;
-    return (put_tab(tab, count, n, is_negative));
+	is_negative = 0;
+	if (n == -2147483648)
+		return (ft_strdup("-2147483648"));
+	if (n < 0){
+		is_negative = 1;
+		n = -n;
+	}
+	count = ft_count_digits(n) + is_negative;
+	tab = (char *)malloc(sizeof(char) * (count + 1));
+	if (!tab)
+		return (NULL);
+	tab[count] = 0;
+	count--;
+	return (ft_fill_number(tab, count, n, is_negative));
 }
