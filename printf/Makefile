@@ -1,9 +1,8 @@
 # ╔═══════════════════════════════════════════════════════════════════════════╗
 # ║                                                                           ║
-# ║                          LIBFT MAKEFILE                                   ║
+# ║                             PRINTF MAKEFILE                               ║
 # ║                                                                           ║
-# ║  A complete C library with memory manipulation, string processing,        ║
-# ║  conversion, tokenization, get_next_line and printf functions.            ║
+# ║  A custom implementation of printf handling c, s, d, i, u, x, X, p, %.    ║
 # ║                                                                           ║
 # ║  By: natrijau                                                             ║
 # ║  Created: 2026/09/29                                                      ║
@@ -29,9 +28,9 @@ RESET		= \033[0m
 #                           CONFIGURATION
 # ═════════════════════════════════════════════════════════════════════════════
 
-NAME		= libft.a
-HEADER		= libft.h
-CC			= cc
+NAME		= ft_printf.a
+HEADER		= ft_printf.h
+CC			= gcc
 CFLAGS		= -Wall -Wextra -Werror -g -I.
 AR			= ar
 ARFLAGS		= rcs
@@ -45,103 +44,35 @@ MKDIR		= mkdir -p
 SRC_DIR		= src
 OBJ_DIR		= obj
 
-SUBDIRS		= memory character string convert split output list
+SUBDIRS		= main output convert format
 
 SRC_SUBDIRS	= $(addprefix $(SRC_DIR)/,$(SUBDIRS))
 OBJ_SUBDIRS	= $(addprefix $(OBJ_DIR)/,$(SUBDIRS))
 
 # ═════════════════════════════════════════════════════════════════════════════
-#                     SUBPROJECTS: GNL & PRINTF
-# ═════════════════════════════════════════════════════════════════════════════
-
-GNL_DIR		= gnl
-GNL_NAME	= $(GNL_DIR)/get_next_line.a
-
-PRINTF_DIR	= printf
-PRINTF_NAME	= $(PRINTF_DIR)/ft_printf.a
-
-# ═════════════════════════════════════════════════════════════════════════════
 #                        SOURCE FILES ORGANIZATION
 # ═════════════════════════════════════════════════════════════════════════════
 
-# Memory management functions (allocation, deallocation, copy, etc.)
-SRC_MEMORY		=	ft_bzero.c \
-					ft_memchr.c \
-					ft_memcpy.c \
-					ft_memmove.c \
-					ft_memset.c \
-					ft_calloc.c \
-					ft_memcmp.c
+# main parsing / dispatch logic
+SRC_MAIN		=	ft_printf.c
 
-# Character classification and conversion (isalpha, tolower, etc.)
-SRC_CHAR		=	ft_isalnum.c \
-					ft_isalpha.c \
-					ft_isascii.c \
-					ft_isdigit.c \
-					ft_isprint.c \
-					ft_tolower.c \
-					ft_toupper.c
+# Numeric / hexadecimal / pointer conversions
+SRC_CONVERT		=	ft_nbr_unsigned.c \
+					ft_hexa_min.c \
+					ft_hexa_maj.c \
+					ft_pointer_hexa.c \
+					ft_float.c
 
-# List manipulation (lstnew, lstadd_front, lstadd_back, etc.)
-SRC_LIST		=	ft_lstadd_back.c \
-					ft_lstadd_front.c \
-					ft_lstclear.c \
-					ft_lstdelone.c \
-					ft_lstiter.c \
-					ft_lstlast.c \
-					ft_lstmap.c \
-					ft_lstnew.c \
-					ft_lstsize.c
-
-# String manipulation (strlen, strchr, strjoin, etc.)
-SRC_STRING		=	ft_strlen.c \
-					ft_strlcat.c \
-					ft_strlcpy.c \
-					ft_strncmp.c \
-					ft_strchr.c \
-					ft_strrchr.c \
-					ft_strnstr.c \
-					ft_strdup.c \
-					ft_substr.c \
-					ft_strjoin.c \
-					ft_strtrim.c \
-					ft_strmapi.c \
-					ft_striteri.c
-
-# Type conversion (atoi, itoa)
-SRC_CONVERT		=	ft_atoi.c \
-					ft_itoa.c \
-					ft_count_digits.c \
-					ft_check_int_overflow.c
-
-# String splitting and tokenization (generic, reusable)
-SRC_SPLIT		=	ft_split.c \
-					ft_alloc_str_array.c \
-					ft_extract_tokens.c \
-					ft_free_str_array.c \
-					ft_count_tokens.c \
-					ft_token_len.c \
-					ft_is_separator.c
-
-# Output functions (file descriptor based)
-SRC_OUTPUT		=	ft_putchar_fd.c \
-					ft_putstr_fd.c \
-					ft_putendl_fd.c \
-					ft_putnbr_fd.c \
-					ft_putchar.c \
-					ft_putstr.c
+# Special format handling (%%)
+SRC_FORMAT		=	ft_percent.c
 
 # ═════════════════════════════════════════════════════════════════════════════
 #                        SOURCES WITH PATHS
 # ═════════════════════════════════════════════════════════════════════════════
 
-SOURCES_FULL	=	$(addprefix $(SRC_DIR)/memory/,$(SRC_MEMORY)) \
-					$(addprefix $(SRC_DIR)/character/,$(SRC_CHAR)) \
-					$(addprefix $(SRC_DIR)/list/,$(SRC_LIST)) \
-					$(addprefix $(SRC_DIR)/string/,$(SRC_STRING)) \
+SOURCES_FULL	=	$(addprefix $(SRC_DIR)/main/,$(SRC_MAIN)) \
 					$(addprefix $(SRC_DIR)/convert/,$(SRC_CONVERT)) \
-					$(addprefix $(SRC_DIR)/split/,$(SRC_SPLIT)) \
-					$(addprefix $(SRC_DIR)/output/,$(SRC_OUTPUT))
+					$(addprefix $(SRC_DIR)/format/,$(SRC_FORMAT))
 
 OBJECTS_FULL	=	$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES_FULL))
 
@@ -149,39 +80,20 @@ OBJECTS_FULL	=	$(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SOURCES_FULL))
 #                              BUILD RULES
 # ═════════════════════════════════════════════════════════════════════════════
 
-.PHONY: all clean fclean re help directories gnl printf merge
+.PHONY: all clean fclean re help directories
 
 # Default target
-all: header directories libft_objs gnl printf merge footer
-
-# Build only libft's own object files + archive them temporarily
-libft_objs: $(OBJECTS_FULL)
-	@echo "$(BOLD)$(MAGENTA)[Archiving]$(RESET) libft core objects"
-	@$(AR) $(ARFLAGS) $(NAME) $(OBJECTS_FULL)
+all: header directories $(NAME) footer
 
 # Create necessary directories
 directories:
 	@$(MKDIR) $(OBJ_SUBDIRS)
 
-# Build get_next_line sub-library
-gnl:
-	@echo "$(BOLD)$(BLUE)[Building]$(RESET) get_next_line"
-	@$(MAKE) -C $(GNL_DIR)
-
-# Build ft_printf sub-library
-printf:
-	@echo "$(BOLD)$(BLUE)[Building]$(RESET) ft_printf"
-	@$(MAKE) -C $(PRINTF_DIR)
-
-# Merge all .a archives into the final libft.a
-merge: libft_objs
-	@echo "$(BOLD)$(MAGENTA)[Merging]$(RESET) gnl and printf archives into $(NAME)"
-	@$(MKDIR) .tmp_merge
-	@cd .tmp_merge && $(AR) -x ../$(GNL_NAME)
-	@cd .tmp_merge && $(AR) -x ../$(PRINTF_NAME)
-	@$(AR) $(ARFLAGS) $(NAME) .tmp_merge/*.o
-	@$(RM) -r .tmp_merge
-	@echo "$(GREEN)[OK] Library merged successfully$(RESET)"
+# Build the static library
+$(NAME): $(OBJECTS_FULL)
+	@echo "$(BOLD)$(MAGENTA)[Linking]$(RESET) $(CYAN)$(NAME)$(RESET)"
+	@$(AR) $(ARFLAGS) $(NAME) $(OBJECTS_FULL)
+	@echo "$(GREEN)[OK] Library created successfully$(RESET)"
 
 # Compile each .c file into .o object file
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADER)
@@ -192,17 +104,12 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADER)
 clean:
 	@echo "$(BOLD)$(RED)[Cleaning]$(RESET) Object files..."
 	@$(RM) -r $(OBJ_DIR)
-	@$(RM) -r .tmp_merge
-	@$(MAKE) -C $(GNL_DIR) clean
-	@$(MAKE) -C $(PRINTF_DIR) clean
 	@echo "$(GREEN)[OK] Object files removed$(RESET)"
 
 # Remove everything (objects + library)
 fclean: clean
 	@echo "$(BOLD)$(RED)[Deep Cleaning]$(RESET) Library and objects..."
 	@$(RM) $(NAME)
-	@$(MAKE) -C $(GNL_DIR) fclean
-	@$(MAKE) -C $(PRINTF_DIR) fclean
 	@echo "$(GREEN)[OK] Library removed$(RESET)"
 
 # Rebuild everything from scratch
@@ -212,36 +119,28 @@ re: fclean all
 help:
 	@echo ""
 	@echo "$(BOLD)$(CYAN)╔════════════════════════════════════════════════════════════╗$(RESET)"
-	@echo "$(BOLD)$(CYAN)║              LIBFT BUILD SYSTEM - HELP                     ║$(RESET)"
+	@echo "$(BOLD)$(CYAN)║                 PRINTF BUILD SYSTEM - HELP                 ║$(RESET)"
 	@echo "$(BOLD)$(CYAN)╚════════════════════════════════════════════════════════════╝$(RESET)"
 	@echo ""
 	@echo "$(BOLD)Available targets:$(RESET)"
-	@echo "  $(GREEN)make$(RESET)          Build libft + gnl + printf, merge into libft.a"
+	@echo "  $(GREEN)make$(RESET)          Build the library (default target)"
 	@echo "  $(GREEN)make all$(RESET)      Same as 'make'"
-	@echo "  $(GREEN)make clean$(RESET)    Remove object files (.o) in libft/gnl/printf"
-	@echo "  $(GREEN)make fclean$(RESET)   Remove object files and all libraries"
+	@echo "  $(GREEN)make clean$(RESET)    Remove object files (.o)"
+	@echo "  $(GREEN)make fclean$(RESET)   Remove object files and library"
 	@echo "  $(GREEN)make re$(RESET)       Rebuild everything from scratch"
 	@echo "  $(GREEN)make help$(RESET)     Display this help message"
 	@echo ""
 	@echo "$(BOLD)Project Structure:$(RESET)"
-	@echo "  $(MAGENTA)Memory functions$(RESET)          : 7 functions"
-	@echo "  $(MAGENTA)Character functions$(RESET)       : 7 functions"
-	@echo "  $(MAGENTA)Lists functions$(RESET)           : 9 functions"
-	@echo "  $(MAGENTA)String functions$(RESET)         : 13 functions"
-	@echo "  $(MAGENTA)Conversion functions$(RESET)      : 4 functions"
-	@echo "  $(MAGENTA)Tokenization functions$(RESET)    : 7 functions"
-	@echo "  $(MAGENTA)Output functions$(RESET)         : 6 functions"
-	@echo "  $(MAGENTA)Get_next_line$(RESET)             : merged into libft.a"
-	@echo "  $(MAGENTA)Ft_printf$(RESET)                 : merged into libft.a"
+	@echo "  $(MAGENTA)main (parsing/dispatch)$(RESET)  : 2 functions"
+	@echo "  $(MAGENTA)Conversion functions$(RESET)     : 5 functions"
+	@echo "  $(MAGENTA)Format functions$(RESET)         : 1 function"
 	@echo "  $(DIM)────────────────────────────$(RESET)"
-	@echo "  $(BOLD)Total: 53 functions + gnl + printf$(RESET)"
+	@echo "  $(BOLD)Total: 10 functions$(RESET)"
 	@echo ""
 	@echo "$(BOLD)Directory Layout:$(RESET)"
 	@echo "  $(CYAN)src/$(RESET)               Source files organized by category"
 	@echo "  $(CYAN)obj/$(RESET)               Compiled object files (generated)"
-	@echo "  $(CYAN)gnl/$(RESET)               get_next_line sub-project"
-	@echo "  $(CYAN)printf/$(RESET)            ft_printf sub-project"
-	@echo "  $(CYAN)libft.a$(RESET)            Final static library (libft + gnl + printf)"
+	@echo "  $(CYAN)ft_printf.a$(RESET)      Final static library"
 	@echo ""
 	@echo "$(BOLD)Compilation flags:$(RESET)"
 	@echo "  $(CYAN)$(CFLAGS)$(RESET)"
@@ -251,7 +150,7 @@ help:
 header:
 	@echo ""
 	@echo "$(BOLD)$(CYAN)╔════════════════════════════════════════════════════════════╗$(RESET)"
-	@echo "$(BOLD)$(CYAN)║                   Building LIBFT                           ║$(RESET)"
+	@echo "$(BOLD)$(CYAN)║                Building      PRINTF                        ║$(RESET)"
 	@echo "$(BOLD)$(CYAN)╚════════════════════════════════════════════════════════════╝$(RESET)"
 	@echo ""
 
@@ -259,6 +158,6 @@ header:
 footer:
 	@echo ""
 	@echo "$(BOLD)$(GREEN)╔════════════════════════════════════════════════════════════╗$(RESET)"
-	@echo "$(BOLD)$(GREEN)║      BUILD COMPLETE - libft.a includes gnl & printf!       ║$(RESET)"
+	@echo "$(BOLD)$(GREEN)║            BUILD COMPLETE - ALL READY!                     ║$(RESET)"
 	@echo "$(BOLD)$(GREEN)╚════════════════════════════════════════════════════════════╝$(RESET)"
 	@echo ""

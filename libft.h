@@ -190,8 +190,14 @@ int		ft_is_separator(char c, char sep);
 /* Ecrit le caractere 'c' sur le descripteur de fichier 'fd'. */
 void	ft_putchar_fd(char c, int fd);
 
+/* Ecrit le caractere 'c' sur le descripteur de fichier 1. */
+int		ft_putchar(char c);
+
 /* Ecrit la chaine 's' sur le descripteur de fichier 'fd'. */
 void	ft_putstr_fd(char *s, int fd);
+
+/* Ecrit la chaine 's' sur le descripteur de fichier 1. */
+int		ft_putstr(char *s);
 
 /* Ecrit la chaine 's' suivie d'une nouvelle ligne sur le descripteur de fichier 'fd'. */
 void	ft_putendl_fd(char *s, int fd);
