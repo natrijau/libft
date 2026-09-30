@@ -45,7 +45,7 @@ MKDIR		= mkdir -p
 SRC_DIR		= src
 OBJ_DIR		= obj
 
-SUBDIRS		= memory character string convert split output
+SUBDIRS		= memory character string convert split output list
 
 SRC_SUBDIRS	= $(addprefix $(SRC_DIR)/,$(SUBDIRS))
 OBJ_SUBDIRS	= $(addprefix $(OBJ_DIR)/,$(SUBDIRS))
@@ -71,6 +71,17 @@ SRC_CHAR		=	ft_isalnum.c \
 					ft_isprint.c \
 					ft_tolower.c \
 					ft_toupper.c
+
+# List manipulation (lstnew, lstadd_front, lstadd_back, etc.)
+SRC_LIST		=	ft_lstadd_back.c \
+					ft_lstadd_front.c \
+					ft_lstclear.c \
+					ft_lstdelone.c \
+					ft_lstiter.c \
+					ft_lstlast.c \
+					ft_lstmap.c \
+					ft_lstnew.c \
+					ft_lstsize.c
 
 # String manipulation (strlen, strchr, strjoin, etc.)
 SRC_STRING		=	ft_strlen.c \
@@ -114,6 +125,7 @@ SRC_OUTPUT		=	ft_putchar_fd.c \
 
 SOURCES_FULL	=	$(addprefix $(SRC_DIR)/memory/,$(SRC_MEMORY)) \
 					$(addprefix $(SRC_DIR)/character/,$(SRC_CHAR)) \
+					$(addprefix $(SRC_DIR)/list/,$(SRC_LIST)) \
 					$(addprefix $(SRC_DIR)/string/,$(SRC_STRING)) \
 					$(addprefix $(SRC_DIR)/convert/,$(SRC_CONVERT)) \
 					$(addprefix $(SRC_DIR)/split/,$(SRC_SPLIT)) \
@@ -178,6 +190,7 @@ help:
 	@echo "$(BOLD)Project Structure:$(RESET)"
 	@echo "  $(MAGENTA)Memory functions$(RESET)          : 7 functions"
 	@echo "  $(MAGENTA)Character functions$(RESET)       : 7 functions"
+	@echo "  $(MAGENTA)Lists functions$(RESET)           : 7 functions"
 	@echo "  $(MAGENTA)String functions$(RESET)         : 13 functions"
 	@echo "  $(MAGENTA)Conversion functions$(RESET)      : 2 functions"
 	@echo "  $(MAGENTA)Tokenization functions$(RESET)    : 7 functions"

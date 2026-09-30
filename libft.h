@@ -15,6 +15,11 @@
 #include    <stdlib.h>
 #include    <unistd.h>
 
+typedef struct s_list{
+	void			*content;
+	struct s_list	*next;
+}   t_list;
+
 /* ----------------------------- Memory functions -------------------------- */
 
 /* Remplit 'n' octets a partir de 's' avec des zeros. */
@@ -60,6 +65,35 @@ int		ft_tolower(int c);
 
 /* Convertit 'c' en majuscule. */
 int		ft_toupper(int c);
+
+/* --------------------------- Bonus (Linked List) -------------------------- */
+
+/* Cree un nouveau noeud avec 'content' et next = NULL. */
+t_list	*ft_lstnew(void *content);
+
+/* Ajoute le noeud 'new' au debut de la liste 'lst'. */
+void	ft_lstadd_front(t_list **lst, t_list *new);
+
+/* Compte le nombre de noeuds dans la liste. */
+int		ft_lstsize(t_list *lst);
+
+/* Retourne le dernier noeud de la liste. */
+t_list	*ft_lstlast(t_list *lst);
+
+/* Ajoute le noeud 'new' a la fin de la liste 'lst'. */
+void	ft_lstadd_back(t_list **lst, t_list *new);
+
+/* Libere un noeud et son contenu (via 'del'). */
+void	ft_lstdelone(t_list *lst, void (*del)(void *));
+
+/* Libere toute la liste et met le pointeur a NULL. */
+void	ft_lstclear(t_list **lst, void (*del)(void *));
+
+/* Applique 'f' au contenu de chaque noeud. */
+void	ft_lstiter(t_list *lst, void (*f)(void *));
+
+/* Cree une nouvelle liste en appliquant 'f' a chaque noeud. */
+t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *));
 
 /* ----------------------------- String functions --------------------------- */
 
